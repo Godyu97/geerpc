@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"go.uber.org/zap"
 	"fmt"
+	"log"
 )
 
 type GeeLogger interface {
@@ -28,9 +28,9 @@ func Error(a ...any) {
 type defaultLog struct{}
 
 func (l *defaultLog) Info(a ...any) {
-	zap.L().Info(fmt.Sprintln(a...))
+	log.Print("INFO ", fmt.Sprintln(a...))
 }
 
 func (l *defaultLog) Error(a ...any) {
-	zap.L().Error(fmt.Sprintln(a...))
+	log.Print("ERROR ", fmt.Sprintln(a...))
 }

@@ -3,15 +3,15 @@ package codec
 import (
 	"bufio"
 	"io"
-	"github.com/bytedance/sonic"
 	"github.com/Godyu97/geerpc/logger"
+	jsoniter "github.com/json-iterator/go"
 )
 
 type JsonCodec struct {
 	conn io.ReadWriteCloser
 	buf  *bufio.Writer
-	dec  sonic.Decoder
-	enc  sonic.Encoder
+	dec  *jsoniter.Decoder
+	enc  *jsoniter.Encoder
 }
 
 func (j *JsonCodec) Close() error {
@@ -23,6 +23,7 @@ func (j *JsonCodec) ReadHeader(header *Header) error {
 }
 
 func (j *JsonCodec) ReadBody(body any) error {
+	logger.Info("begin ReadBody json")
 	return j.dec.Decode(body)
 }
 
@@ -41,6 +42,7 @@ func (j *JsonCodec) Write(header *Header, body any) (err error) {
 		logger.Error("rpc codec: json error encoding body:", err)
 		return err
 	}
+	logger.Info("write done:", *header, body)
 	return nil
 }
 
@@ -49,7 +51,7 @@ func NewJsonCodec(conn io.ReadWriteCloser) Codec {
 	return &JsonCodec{
 		conn: conn,
 		buf:  buf,
-		dec:  sonic.ConfigFastest.NewDecoder(conn),
-		enc:  sonic.ConfigFastest.NewEncoder(buf),
+		dec:  jsoniter.NewDecoder(conn),
+		enc:  jsoniter.NewEncoder(buf),
 	}
 }
