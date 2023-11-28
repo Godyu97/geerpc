@@ -11,15 +11,8 @@ import (
 	"fmt"
 )
 
-const MagicNumber = 0x3bef5c
-
-type Option struct {
-	MagicNumber int        // MagicNumber marks this's a geerpc request
-	CodecType   codec.Type // client may choose different Codec to encode body
-}
-
-var DefaultOption = Option{
-	MagicNumber: MagicNumber,
+var DefaultOption = codec.Option{
+	MagicNumber: codec.MagicNumber,
 	CodecType:   codec.JsonType,
 }
 
@@ -49,12 +42,12 @@ func (s *Server) ServeConn(conn io.ReadWriteCloser) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	var opt Option
+	var opt codec.Option
 	if err := json.NewDecoder(conn).Decode(&opt); err != nil {
 		logger.Error("rpc server: options error: ", err)
 		return
 	}
-	if opt.MagicNumber != MagicNumber {
+	if opt.MagicNumber != codec.MagicNumber {
 		logger.Error("rpc server: invalid magic number %x", opt.MagicNumber)
 		return
 	}

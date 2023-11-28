@@ -6,7 +6,6 @@ import (
 	"github.com/Godyu97/geerpc/codec"
 	"encoding/json"
 	"net"
-	"github.com/Godyu97/geerpc/server"
 )
 
 func main() {
@@ -19,8 +18,8 @@ func main() {
 
 	log.Println("连接成功")
 	// send options
-	_ = json.NewEncoder(conn).Encode(server.Option{
-		MagicNumber: server.MagicNumber,
+	_ = json.NewEncoder(conn).Encode(codec.Option{
+		MagicNumber: codec.MagicNumber,
 		CodecType:   codec.JsonType,
 	})
 	cc := codec.NewJsonCodec(conn)
